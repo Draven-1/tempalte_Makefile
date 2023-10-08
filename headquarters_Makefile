@@ -2,10 +2,10 @@ LIB_DRI = lib
 LIB_NAME = RWPlatform_x64
 
 # debug目标文件
-DEBUG_TARGET_LIB = $(LIB_DRI)/$(LIB_NAME)_debug.a
+DEBUG_TARGET_LIB = $(LIB_DRI)/lib$(LIB_NAME)_debug.a
 
 # release目标文件
-RELEASE_TARGET_LIB = $(LIB_DRI)/$(LIB_NAME)_release.a
+RELEASE_TARGET_LIB = $(LIB_DRI)/lib$(LIB_NAME)_release.a
 
 # debug源文件目录
 SOURCE_DIRS_DEBUG = ../CompressFile/obj/debug\
