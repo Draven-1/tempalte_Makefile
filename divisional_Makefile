@@ -1,0 +1,116 @@
+# 源文件目录
+SRC_DIR = .
+
+# 目标文件目录
+OBJ_DIR = obj
+
+# 目标文件目录（Debug 版本）
+OBJ_DIR_DEBUG = obj/debug
+
+# 目标文件目录（Release 版本）
+OBJ_DIR_RELEASE = obj/release
+
+# 静态库输出目录
+LIB_DIR = lib
+
+# 静态库名称
+LIB_NAME = RWPlatform_x64
+
+# 头文件
+INCLUDE_PATH = ../Include \
+				../../Linux_RWKernel/SDK/Include/
+I_FLAGS = $(INCLUDE_PATH:%=-I %)
+
+# 依赖的第三方库路径
+THIRD_LIB_PATH = 
+L_FLAGS = $(THIRD_LIB_PATH:%=-L %)
+
+# 源文件列表
+SOURCES_C = $(wildcard $(SRC_DIR)/*.c)
+SOURCES_CPP := $(wildcard $(SRC_DIR)/*.cpp)
+
+#排除暂时不参与编译的文件
+EXLUDE_CPP_FILES = $(SRC_DIR)/MP_IO.cpp\
+				   $(SRC_DIR)/MP_MultiCastUDP.cpp\
+				   $(SRC_DIR)/MP_TunnelObj_MultiCastUDP.cpp
+SOURCES_CPP := $(filter-out $(EXLUDE_CPP_FILES), $(SOURCES_CPP))
+
+
+# 生成 Debug 版本的目标文件列表
+OBJECTS_DEBUG = $(addprefix $(OBJ_DIR_DEBUG)/, $(patsubst %.c,%.o,$(notdir $(SOURCES_C))))
+OBJECTS_DEBUG += $(addprefix $(OBJ_DIR_DEBUG)/, $(patsubst %.cpp,%.o,$(notdir $(SOURCES_CPP))))
+
+# 生成 Release 版本的目标文件列表
+OBJECTS_RELEASE = $(addprefix $(OBJ_DIR_RELEASE)/, $(patsubst %.c,%.o,$(notdir $(SOURCES_C))))
+OBJECTS_RELEASE += $(addprefix $(OBJ_DIR_RELEASE)/, $(patsubst %.cpp,%.o,$(notdir $(SOURCES_CPP))))
+
+# 编译器和编译选项
+ifeq ($(LINUX_GCC), 1)
+	CC = gcc
+	CXX = g++
+	COMMON_FLAGS = -m64 -D_NG_64 -D_LINUX_GCC -D_NG_THREAD -D_NG_SOCKET -fvisibility=hidden
+else
+	CC = x86_64-w64-mingw32-gcc
+	CXX = x86_64-w64-mingw32-g++
+	COMMON_FLAGS = -m64 -D_NG_64 -D_WIN32_GCC -D_NG_THREAD -D_NG_SOCKET -fvisibility=hidden
+endif
+
+CFLAGS_DEBUG = -g -O0 $(COMMON_FLAGS)
+CXXFLAGS_DEBUG = -g -O0 $(COMMON_FLAGS)
+CFLAGS_RELEASE = -O3 $(COMMON_FLAGS)
+CXXFLAGS_RELEASE = -O3 $(COMMON_FLAGS)
+
+###################################debug#############################################################
+# 生成 Debug 版本的静态库 (debug的在前，则make命令默认生成debug版本 = make debug )
+debug: $(LIB_DIR)/lib$(LIB_NAME)_debug.a
+
+# 编译 Debug 版本的目标文件
+$(OBJ_DIR_DEBUG)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) -c $(CFLAGS_DEBUG) $< -o $@ $(I_FLAGS)
+
+$(OBJ_DIR_DEBUG)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS_DEBUG) -c $< -o $@ $(I_FLAGS)
+
+# 制作 Debug 版本的静态库
+$(LIB_DIR)/lib$(LIB_NAME)_debug.a: $(OBJECTS_DEBUG)
+	mkdir -p $(LIB_DIR)
+	ar rcs $@ $^
+
+###################################release###########################################################
+# 生成 Release 版本的静态库 (make release 生存release版本)
+release: $(LIB_DIR)/lib$(LIB_NAME)_release.a
+
+# 编译 Release 版本的目标文件
+$(OBJ_DIR_RELEASE)/%.o: $(SRC_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS_RELEASE) -c $< -o $@ $(I_FLAGS)
+
+$(OBJ_DIR_RELEASE)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS_RELEASE) -c $< -o $@ $(I_FLAGS)
+
+# 制作 Release 版本的静态库
+$(LIB_DIR)/lib$(LIB_NAME)_release.a: $(OBJECTS_RELEASE)
+	mkdir -p $(LIB_DIR)
+	ar rcs $@ $^
+
+clean:
+	rm -rf $(LIB_DIR) $(OBJ_DIR)
+
+test:
+	@echo $(COMMON_FLAGS)
+	@echo $(CFLAGS_DEBUG)
+	@echo $(CXXFLAGS_DEBUG)
+	@echo $(CFLAGS_RELEASE)
+	@echo $(CXXFLAGS_RELEASE)
+	@echo $(CC)
+	@echo $(CXX)
+	@echo $(I_FLAGS)
+	@echo $(SOURCES_CPP)
+	@echo $(SOURCES_C)
+	@echo $(OBJECTS_DEBUG)
+
+.PHONY: debug release clean test
+
