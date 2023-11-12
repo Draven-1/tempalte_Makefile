@@ -1,5 +1,5 @@
 LIB_DRI = lib
-LIB_NAME = RWPlatform_x64
+LIB_NAME = libname
 
 # debug目标文件
 DEBUG_TARGET_LIB = $(LIB_DRI)/lib$(LIB_NAME)_debug.a
@@ -8,16 +8,16 @@ DEBUG_TARGET_LIB = $(LIB_DRI)/lib$(LIB_NAME)_debug.a
 RELEASE_TARGET_LIB = $(LIB_DRI)/lib$(LIB_NAME)_release.a
 
 # debug源文件目录
-SOURCE_DIRS_DEBUG = ../CompressFile/obj/debug\
-					../DataBase/obj/debug\
-					../Network/obj/debug\
+SOURCE_DIRS_DEBUG = ../******/obj/debug\
+					../*****/obj/debug\
+					../*****/obj/debug\
 					../Src/obj/debug
 
 
 # release源文件目录
-SOURCE_DIRS_RELEASE = ../CompressFile/obj/release\
-					../DataBase/obj/release\
-					../Network/obj/release\
+SOURCE_DIRS_RELEASE = ../******/obj/release\
+					../******/obj/release\
+					../*******/obj/release\
 					../Src/obj/release
 
 default:
@@ -37,9 +37,9 @@ debug: | debug_make  # 这样可以保证OBJECTS_DEBUG变量正常提取到.o文
 	ar rcs $(DEBUG_TARGET_LIB) $(OBJECTS_DEBUG)
 
 debug_make:
-	pushd ../CompressFile && make debug && popd
-	pushd ../DataBase && make debug && popd
-	pushd ../Network && make debug && popd
+	pushd ../***** && make debug && popd
+	pushd ../***** && make debug && popd
+	pushd ../****** && make debug && popd
 	pushd ../Src && make debug && popd
 endif
 
@@ -52,16 +52,16 @@ release: | release_make
 	ar rcs $(RELEASE_TARGET_LIB) $(OBJECTS_RELEASE)
 
 release_make:
-	pushd ../CompressFile && make release && popd
-	pushd ../DataBase && make release && popd
-	pushd ../Network && make release && popd
+	pushd ../***** && make release && popd
+	pushd ../***** && make release && popd
+	pushd ../****** && make release && popd
 	pushd ../Src && make release && popd
 endif
 
 clean:
-	pushd ../CompressFile && make clean && popd
-	pushd ../DataBase && make clean && popd
-	pushd ../Network && make clean && popd
+	pushd ../******* && make clean && popd
+	pushd ../******* && make clean && popd
+	pushd ../******* && make clean && popd
 	pushd ../Src && make clean && popd
 	rm -rf $(LIB_DRI)
 
