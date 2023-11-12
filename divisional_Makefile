@@ -14,11 +14,11 @@ OBJ_DIR_RELEASE = obj/release
 LIB_DIR = lib
 
 # 静态库名称
-LIB_NAME = RWPlatform_x64
+LIB_NAME = libname
 
 # 头文件
 INCLUDE_PATH = ../Include \
-				../../Linux_RWKernel/SDK/Include/
+				../../*****/*****/Include/
 I_FLAGS = $(INCLUDE_PATH:%=-I %)
 
 # 依赖的第三方库路径
@@ -31,8 +31,8 @@ SOURCES_CPP := $(wildcard $(SRC_DIR)/*.cpp)
 
 #排除暂时不参与编译的文件
 EXLUDE_CPP_FILES = $(SRC_DIR)/MP_IO.cpp\
-				   $(SRC_DIR)/MP_MultiCastUDP.cpp\
-				   $(SRC_DIR)/MP_TunnelObj_MultiCastUDP.cpp
+				   $(SRC_DIR)/xxxxx.cpp\
+				   $(SRC_DIR)/xxxxxxx.cpp
 SOURCES_CPP := $(filter-out $(EXLUDE_CPP_FILES), $(SOURCES_CPP))
 
 
